@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>毛孩樂園 - 寵物分享交流平台</title>
+  
+  <!-- 引入 Google Fonts 與 Font Awesome 可愛風圖標 -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* --- 1. 全域樣式與活潑可愛色調配置 --- */
+    :root {
+      --primary-pink: #FFB7B2;    /* 溫柔粉紅 */
+      --primary-orange: #FFDAC1;  /* 溫暖柔橘 */
+      --accent-green: #B5EAD7;    /* 活力嫩綠 */
+      --bg-cream: #FFF8F2;        /* 溫馨奶茶底色 */
+      --text-brown: #5D4037;      /* 深咖啡暖色文字 */
+      --white: #FFFFFF;
+      --card-shadow: 0 10px 20px rgba(93, 64, 55, 0.08);
+      --border-radius-lg: 24px;
+      --border-radius-md: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-brown);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- 2. 導覽列樣式 --- */
+    header {
+      background-color: var(--white);
+      padding: 15px 30px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 4px solid var(--primary-orange);
+    }
+
+    .logo {
+      font-family: 'Fredoka One', 'Noto Sans TC', sans-serif;
+      font-size: 26px;
+      color: #FF9AA2;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    nav button, nav a {
+      background: none;
+      border: none;
+      color: var(--text-brown);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 10px 18px;
+      border-radius: 30px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    nav button:hover, nav a:hover {
+      background-color: var(--primary-orange);
+      transform: translateY(-2px);
+    }
+
+    nav button.btn-highlight {
+      background-color: var(--primary-pink);
+      color: var(--white);
+      font-weight: 700;
+    }
+    nav button.btn-highlight:hover {
+      background-color: #FF9AA2;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .user-badge img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-pink);
+    }
+
+    /* --- 3. 頁面佈局與元件 --- */
+    .container {
+      max-width: 760px;
+      width: 100%;
+      margin: 30px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    .page {
+      display: none; /* 控制單頁式應用的顯示切換 */
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .card {
+      background-color: var(--white);
+      border-radius: var(--border-radius-lg);
+      padding: 30px;
+      box-shadow: var(--card-shadow);
+      border: 3px solid #FFFFFF;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #FF9AA2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+    }
+
+    /* 表單設計 */
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="password"],
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2.5px solid var(--primary-orange);
+      border-radius: var(--border-radius-md);
+      outline: none;
+      font-size: 16px;
+      background-color: #FFFDFB;
+      transition: all 0.2s ease;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--primary-pink);
+      background-color: var(--white);
+      box-shadow: 0 0 0 4px rgba(255, 183, 178, 0.2);
+    }
+
+    .form-group input[type="file"] {
+      padding: 10px 0;
+      font-size: 14px;
+    }
+
+    .btn {
+      background-color: var(--primary-pink);
+      color: var(--white);
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: var(--border-radius-md);
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(255, 183, 178, 0.3);
+    }
+
+    .btn:hover {
+      background-color: #FF9AA2;
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .switch-form-hint {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .switch-form-hint span {
+      color: #FF9AA2;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    /* --- 4. 個人首頁頂部資訊 --- */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--white);
+      padding: 25px;
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 30px;
+      border: 3px solid #FFFFFF;
+    }
+
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .profile-info img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary-pink);
+    }
+
+    .profile-text h3 {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .profile-text p {
+      font-size: 14px;
+      color: #8D6E63;
+      background-color: var(--primary-orange);
+      padding: 3px 10px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    .btn-create-post {
+      background-color: var(--accent-green);
+      color: var(--text-brown);
+      width: auto;
+      box-shadow: 0 4px 10px rgba(181, 234, 215, 0.4);
+    }
+    .btn-create-post:hover {
+      background-color: #98DBCC;
+    }
+
+    /* --- 5. 發文頁面特有樣式 --- */
+    .author-preview {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 3px dashed var(--primary-orange);
+    }
+
+    .author-preview img {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-pink);
+    }
+
+    /* --- 6. 動態貼文牆牆與卡片結構 --- */
+    .post-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .post-card {
+      background-color: var(--white);
+      border-radius: var(--border-radius-lg);
+      padding: 25px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(255, 218, 193, 0.4);
+    }
+
+    .post-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .post-author img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-orange);
+    }
+
+    .post-author-info h4 {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .post-author-info span.author-id {
+      font-size: 13px;
+      color: #A1887F;
+      font-weight: 400;
+    }
+
+    .post-author-info div.post-time {
+      font-size: 12px;
+      color: #BCAAA4;
+      margin-top: 2px;
+    }
+
+    .post-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #E91E63;
+    }
+
+    .post-content {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+      white-space: pre-wrap;
+    }
+
+    .post-image {
+      width: 100%;
+      max-height: 450px;
+      object-fit: cover;
+      border-radius: var(--border-radius-md);
+      margin-bottom: 18px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    /* 按鈕操作區（按讚、評論） */
+    .post-actions {
+      display: flex;
+      gap: 25px;
+      border-top: 2px dashed #F5EBE6;
+      border-bottom: 2px dashed #F5EBE6;
+      padding: 12px 5px;
+      margin-bottom: 18px;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: #8D6E63;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      color: var(--primary-pink);
+      transform: scale(1.05);
+    }
+
+    .action-btn.liked {
+      color: #FF5252;
+      font-weight: 700;
+    }
+
+    /* 貼文留言區塊 */
+    .comments-section {
+      background-color: #FFFDFB;
+      border-radius: var(--border-radius-md);
+      padding: 20px;
+      border: 1.5px solid #F5EBE6;
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 18px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .comment-item {
+      display: flex;
+      gap: 10px;
+      font-size: 14.5px;
+      line-height: 1.5;
+    }
+
+    .comment-bubble {
+      background-color: #F5EBE6;
+      padding: 10px 14px;
+      border-radius: 18px;
+      flex: 1;
+    }
+
+    .comment-user {
+      font-weight: 700;
+      margin-right: 6px;
+      color: #5D4037;
+    }
+
+    .comment-input-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .comment-input-group input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--primary-orange);
+      border-radius: 25px;
+      outline: none;
+      font-size: 14.5px;
+      transition: all 0.2s;
+    }
+
+    .comment-input-group input:focus {
+      border-color: var(--primary-pink);
+    }
+
+    .comment-input-group button {
+      background-color: var(--accent-green);
+      border: none;
+      color: var(--text-brown);
+      padding: 0 22px;
+      border-radius: 25px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .comment-input-group button:hover {
+      background-color: #98DBCC;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= 導覽列 ================= -->
+  <header>
+    <a href="#" class="logo" onclick="navigateTo('explorePage')">
+      <i class="fas fa-paw"></i> 毛孩樂園
+    </a>
+    <nav id="navMenu">
+      <!-- 狀態區：由 JavaScript 動態解析渲染登入或未登入按鈕 -->
+    </nav>
+  </header>
+
+  <!-- ================= 主內容容器 ================= -->
+  <div class="container">
+
+    <!-- 頁面 1：登入與註冊模組 -->
+    <div id="authPage" class="page">
+      <!-- 登入表單 -->
+      <div id="loginFormContainer" class="card">
+        <h2><i class="fas fa-sign-in-alt"></i> 歡迎回巢！請登入</h2>
+        <div class="form-group">
+          <label>帳號 ID</label>
+          <input type="text" id="loginId" placeholder="請輸入帳號 ID">
+        </div>
+        <div class="form-group">
+          <label>密碼</label>
+          <input type="password" id="loginPassword" placeholder="請輸入密碼">
+        </div>
+        <button class="btn" onclick="handleLogin()">登入平台 🐾</button>
+        <p class="switch-form-hint">還沒有帳號嗎？ <span onclick="toggleAuthForm(false)">點我立即註冊</span></p>
+      </div>
+
+      <!-- 註冊表單 -->
+      <div id="registerFormContainer" class="card" style="display: none;">
+        <h2><i class="fas fa-user-plus"></i> 加入毛孩家族</h2>
+        <div class="form-group">
+          <label>帳號 ID (不可重複)</label>
+          <input type="text" id="regId" placeholder="請輸入欲設定的唯一 ID">
+        </div>
+        <div class="form-group">
+          <label>暱稱 / 毛孩名稱</label>
+          <input type="text" id="regName" placeholder="大家怎麼稱呼你和寶貝呢？">
+        </div>
+        <div class="form-group">
+          <label>密碼</label>
+          <input type="password" id="regPassword" placeholder="請設定您的密碼">
+        </div>
+        <div class="form-group">
+          <label>上傳萌萌頭貼</label>
+          <input type="file" id="regAvatar" accept="image/*">
+        </div>
+        <button class="btn" onclick="handleRegister()">註冊新帳號 ✨</button>
+        <p class="switch-form-hint">已經有帳號了？ <span onclick="toggleAuthForm(true)">返回登入</span></p>
+      </div>
+    </div>
+
+    <!-- 頁面 2：個人首頁紀錄 -->
+    <div id="profilePage" class="page">
+      <div class="profile-header">
+        <div class="profile-info">
+          <img id="myProfileAvatar" src="" alt="大頭貼">
+          <div class="profile-text">
+            <h3 id="myProfileName">加載中...</h3>
+            <p id="myProfileId">@id</p>
+          </div>
+        </div>
+        <button class="btn btn-create-post" onclick="navigateTo('createPostPage')">
+          <i class="fas fa-plus"></i> 新增貼文
+        </button>
+      </div>
+      <h2><i class="fas fa-folder-open"></i> 我的專屬發文紀錄</h2>
+      <div id="myPostFeed" class="post-feed">
+        <!-- 我的文章會即時渲染在此 -->
+      </div>
+    </div>
+
+    <!-- 頁面 3：全新獨立發文畫面 -->
+    <div id="createPostPage" class="page card">
+      <h2><i class="fas fa-pen-nib"></i> 分享今日萌點</h2>
+      <div class="author-preview">
+        <img id="publishAvatar" src="" alt="頭貼">
+        <div>
+          <strong id="publishName">暱稱</strong>
+          <div id="publishId" style="font-size: 13px; color: #8D6E63; margin-top:2px;">@id</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>發布主題</label>
+        <input type="text" id="postTitle" placeholder="給今天的生活下個吸睛標題吧！">
+      </div>
+      <div class="form-group">
+        <label>發布內容</label>
+        <textarea id="postContent" rows="6" placeholder="快來分享你家寶貝今天又做了什麼好氣又好笑的事情呢..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>上傳寶貝照片 <span style="font-size:12px; color:#A1887F; font-weight:400;">(自由選擇)</span></label>
+        <input type="file" id="postImage" accept="image/*">
+      </div>
+      <button class="btn" onclick="handleCreatePost()">發布貼文到廣播廣場 🚀</button>
+    </div>
+
+    <!-- 頁面 4：公共廣場分享區 -->
+    <div id="explorePage" class="page">
+      <h2 style="margin-bottom: 25px;"><i class="fas fa-globe"></i> 廣場分享區</h2>
+      <div id="globalPostFeed" class="post-feed">
+        <!-- 全體公開文章會即時渲染在此 -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= JavaScript 核心業務邏輯 ================= -->
+  <script>
+    // --- 預設體驗數據：當瀏覽器第一次開啟、尚未有任何發文時的示範貼文 ---
+    const defaultPosts = [
+      {
+        id: "post_sample_1",
+        authorId: "pompom_poodle",
+        authorName: "澎澎與阿橘",
+        authorAvatar: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150",
+        title: "有人家的小乖乖也是接球大師嗎？",
+        content: "今天帶澎澎去中央綠地草皮野餐，本來只是隨手丟一下，沒想到牠今天竟然開外掛！網球甩出去百發百中全接到，旁邊野餐的小朋友都在幫牠鼓掌，阿母我真的太欣慰了 😭❤️",
+        image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=700",
+        likes: ["pompom_poodle"],
+        comments: [
+          { userName: "傲嬌喵星人", text: "太強了吧！我們家的主子只會用看白痴的眼神看我丟球..." }
+        ],
+        timestamp: "2026-05-24 10:30"
+      }
+    ];
+
+    // 全域變數定義
+    let currentUser = null; // 當前登入用戶對象
+    let posts = [];        // 平台儲存的所有貼文陣列
+
+    // 核心系統初始化
+    window.onload = function() {
+      // 1. 載入本地貼文緩存庫
+      const localPosts = localStorage.getItem('pet_platform_posts');
+      if (localPosts) {
+        posts = JSON.parse(localPosts);
+      } else {
+        posts = defaultPosts;
+        localStorage.setItem('pet_platform_posts', JSON.stringify(posts));
+      }
+
+      // 2. 驗證是否有正處於登入狀態的 Session 階段
+      const sessionUser = sessionStorage.getItem('pet_current_user');
+      if (sessionUser) {
+        currentUser = JSON.parse(sessionUser);
+      }
+
+      updateNav();          // 更新導覽列狀態
+      navigateTo('explorePage'); // 系統預設載入首頁：廣場分享區
+    };
+
+    // 單頁面路由處理機制 (SPA Router)
+    function navigateTo(pageId) {
+      // 隱藏全部畫面
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(p => p.classList.remove('active'));
+
+      // 開啟指定節點畫面
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) targetPage.classList.add('active');
+
+      // 根據切換的目的地進行動態數據渲染
+      if (pageId === 'explorePage') {
+        renderGlobalFeed();
+      } else if (pageId === 'profilePage') {
+        if (!authGuard()) return;
+        renderMyFeed();
+      } else if (pageId === 'createPostPage') {
+        if (!authGuard()) return;
+        initCreatePostForm();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 身分阻擋守衛
+    function authGuard() {
+      if (!currentUser) {
+        alert('此功能為會員專屬，請先進行登入或註冊唷！🐾');
+        navigateTo('authPage');
+        return false;
+      }
+      return true;
+    }
+
+    // 登入/註冊表單面板切換
+    function toggleAuthForm(showLogin) {
+      document.getElementById('loginFormContainer').style.display = showLogin ? 'block' : 'none';
+      document.getElementById('registerFormContainer').style.display = showLogin ? 'none' : 'block';
+    }
+
+    // 動態導覽列狀態刷新
+    function updateNav() {
+      const navMenu = document.getElementById('navMenu');
+      if (currentUser) {
+        navMenu.innerHTML = `
+          <a href="#" onclick="navigateTo('explorePage')"><i class="fas fa-globe"></i> 廣場區</a>
+          <a href="#" onclick="navigateTo('profilePage')" class="user-badge">
+            <img src="${currentUser.avatar}" alt="個人頭貼">
+            <span>${currentUser.name}</span>
+          </a>
+          <button onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> 登出</button>
+        `;
+      } else {
+        navMenu.innerHTML = `
+          <a href="#" onclick="navigateTo('explorePage')"><i class="fas fa-globe"></i> 廣場區</a>
+          <button class="btn-highlight" onclick="navigateTo('authPage')"><i class="fas fa-user-circle"></i> 登入 / 註冊</button>
+        `;
+      }
+    }
+
+    // ================= 功能 1：註冊與登入處理 =================
+    // 註冊帳號流程
+    function handleRegister() {
+      const id = document.getElementById('regId').value.trim();
+      const name = document.getElementById('regName').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const avatarFile = document.getElementById('regAvatar').files[0];
+
+      if (!id || !name || !password) {
+        alert('親愛的，每個欄位都必須完整填寫才能註冊唷！👉👈');
+        return;
+      }
+
+      // 檢查帳號重複性
+      let users = JSON.parse(localStorage.getItem('pet_platform_users') || '{}');
+      if (users[id]) {
+        alert('這個帳號 ID 已經被捷足先登了！換一個試試看吧～');
+        return;
+      }
+
+      // 大頭貼預設防呆機制 (若沒上傳則給予隨機萌貓預設圖)
+      let defaultAvatar = "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=150"; 
+
+      if (avatarFile) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          executeUserSave(users, id, name, password, reader.result);
+        }
+        reader.readAsDataURL(avatarFile);
+      } else {
+        executeUserSave(users, id, name, password, defaultAvatar);
+      }
+    }
+
+    function executeUserSave(users, id, name, password, avatarData) {
+      users[id] = { id, name, password, avatar: avatarData };
+      localStorage.setItem('pet_platform_users', JSON.stringify(users));
+      alert('恭喜你成功加入毛孩樂園！🎉 請重新登入你的帳號。');
+      // 清空註冊欄位
+      document.getElementById('regId').value = '';
+      document.getElementById('regName').value = '';
+      document.getElementById('regPassword').value = '';
+      document.getElementById('regAvatar').value = '';
+      toggleAuthForm(true); // 導向登入區
+    }
+
+    // 登入驗證流程
+    function handleLogin() {
+      const id = document.getElementById('loginId').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      const users = JSON.parse(localStorage.getItem('pet_platform_users') || '{}');
+
+      if (users[id] && users[id].password === password) {
+        currentUser = users[id];
+        sessionStorage.setItem('pet_current_user', JSON.stringify(currentUser));
+        updateNav();
+        alert(`登入成功！歡迎回到樂園，${currentUser.name} ✨`);
+        navigateTo('profilePage');
+        // 清空登入欄位
+        document.getElementById('loginId').value = '';
+        document.getElementById('loginPassword').value = '';
+      } else {
+        alert('帳號或密碼不正確，檢查一下拼字再試一次吧！🐾');
+      }
+    }
+
+    // 登出流程
+    function handleLogout() {
+      currentUser = null;
+      sessionStorage.removeItem('pet_current_user');
+      updateNav();
+      alert('已成功登出，期待下次與你相遇！');
+      navigateTo('explorePage');
+    }
+
+    // ================= 功能 2 & 3：發文頁面初始化與儲存 =================
+    function initCreatePostForm() {
+      document.getElementById('publishAvatar').src = currentUser.avatar;
+      document.getElementById('publishName').innerText = currentUser.name;
+      document.getElementById('publishId').innerText = `@${currentUser.id}`;
+      // 清理暫存文字
+      document.getElementById('postTitle').value = '';
+      document.getElementById('postContent').value = '';
+      document.getElementById('postImage').value = '';
+    }
+
+    function handleCreatePost() {
+      const title = document.getElementById('postTitle').value.trim();
+      const content = document.getElementById('postContent').value.trim();
+      const imageFile = document.getElementById('postImage').files[0];
+
+      if (!title || !content) {
+        alert('貼文的主題與內容不能留白喔！');
+        return;
+      }
+
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          saveNewPostData(title, content, reader.result);
+        }
+        reader.readAsDataURL(imageFile);
+      } else {
+        saveNewPostData(title, content, null);
+      }
+    }
+
+    function saveNewPostData(title, content, base64Image) {
+      const timeNow = new Date();
+      const formattedTime = `${timeNow.getFullYear()}-${String(timeNow.getMonth()+1).padStart(2,'0')}-${String(timeNow.getDate()).padStart(2,'0')} ${String(timeNow.getHours()).padStart(2,'0')}:${String(timeNow.getMinutes()).padStart(2,'0')}`;
+
+      const postObj = {
+        id: 'post_uid_' + Date.now(),
+        authorId: currentUser.id,
+        authorName: currentUser.name,
+        authorAvatar: currentUser.avatar,
+        title: title,
+        content: content,
+        image: base64Image,
+        likes: [],
+        comments: [],
+        timestamp: formattedTime
+      };
+
+      posts.unshift(postObj); // 將最新發布的文章置頂
+      localStorage.setItem('pet_platform_posts', JSON.stringify(posts));
+      
+      alert('貼文成功發射！大家都可以在廣場看到了唷 🎈');
+      navigateTo('profilePage'); // 依照指示，發文完後跳轉回個人首頁查看歷史紀錄
+    }
+
+    // ================= 功能 4 & 5：廣場渲染、按讚與留言互動 =================
+    // 渲染廣場全體文章
+    function renderGlobalFeed() {
+      const feed = document.getElementById('globalPostFeed');
+      feed.innerHTML = posts.length === 0 ? '<p style="text-align:center; padding:30px; color:#A1887F;">目前廣場空空如也，快來發布第一篇貼文！</p>' : '';
+      
+      posts.forEach(post => {
+        feed.appendChild(compilePostCardDOM(post));
+      });
+    }
+
+    // 渲染登入者個人的歷史牆
+    function renderMyFeed() {
+      document.getElementById('myProfileAvatar').src = currentUser.avatar;
+      document.getElementById('myProfileName').innerText = currentUser.name;
+      document.getElementById('myProfileId').innerText = `@${currentUser.id}`;
+
+      const feed = document.getElementById('myPostFeed');
+      const myFilteredPosts = posts.filter(p => p.authorId === currentUser.id);
+
+      feed.innerHTML = myFilteredPosts.length === 0 ? '<p style="text-align:center; padding:30px; color:#A1887F;">您目前還沒有發表過任何長篇大論唷～</p>' : '';
+      
+      myFilteredPosts.forEach(post => {
+        feed.appendChild(compilePostCardDOM(post));
+      });
+    }
+
+    // 工廠模式：構建貼文卡片節點
+    function compilePostCardDOM(post) {
+      const card = document.createElement('div');
+      card.className = 'post-card';
+
+      // 檢查當前用戶是否對本貼文按讚
+      const hasLiked = currentUser ? post.likes.includes(currentUser.id) : false;
+
+      card.innerHTML = `
+        <div class="post-author">
+          <img src="${post.authorAvatar}" alt="User Avatar">
+          <div class="post-author-info">
+            <h4>${post.authorName} <span class="author-id">(@${post.authorId})</span></h4>
+            <div class="post-time">${post.timestamp}</div>
+          </div>
+        </div>
+        <div class="post-title">${post.title}</div>
+        <div class="post-content">${post.content}</div>
+        ${post.image ? `<img src="${post.image}" class="post-image" alt="Uploaded Pic">` : ''}
+        
+        <div class="post-actions">
+          <button class="action-btn ${hasLiked ? 'liked' : ''}" onclick="handleLikeClick('${post.id}')">
+            <i class="${hasLiked ? 'fas' : 'far'} fa-heart"></i> 喜歡 (${post.likes.length})
+          </button>
+          <button class="action-btn" onclick="focusCommentInput('${post.id}')">
+            <i class="far fa-comment"></i> 評論 (${post.comments.length})
+          </button>
+        </div>
+
+        <div class="comments-section">
+          <div class="comment-list" id="comment-box-${post.id}">
+            <!-- 留言內容動態注入處 -->
+          </div>
+          <div class="comment-input-group">
+            <input type="text" id="comment-field-${post.id}" placeholder="對這隻超萌毛孩說點話吧..." onclick="interceptVisitorAction()">
+            <button onclick="submitComment('${post.id}')">送出</button>
+          </div>
+        </div>
+      `;
+
+      // 填充該貼文的留言列表
+      const commentBox = card.querySelector(`#comment-box-${post.id}`);
+      if (post.comments.length === 0) {
+        commentBox.innerHTML = `<p style="font-size:12.5px; color:#BCAAA4; padding-left: 5px;">目前還沒有人留言，快來搶第一個沙發！🐾</p>`;
+      } else {
+        post.comments.forEach(comment => {
+          const item = document.createElement('div');
+          item.className = 'comment-item';
+          item.innerHTML = `
+            <div class="comment-bubble">
+              <span class="comment-user">${comment.userName} :</span>${comment.text}
+            </div>
+          `;
+          commentBox.appendChild(item);
+        });
+      }
+
+      return card;
+    }
+
+    // 按讚阻擋與處理
+    function handleLikeClick(postId) {
+      if (!currentUser) {
+        if (confirm('是否有平台帳號？登入後才能幫可愛的毛孩按讚加油唷！')) {
+          navigateTo('authPage');
+        }
+        return;
+      }
+
+      const targetPost = posts.find(p => p.id === postId);
+      const userIndex = targetPost.likes.indexOf(currentUser.id);
+      
+      if (userIndex > -1) {
+        targetPost.likes.splice(userIndex, 1); // 取消讚
+      } else {
+        targetPost.likes.push(currentUser.id); // 加入讚
+      }
+
+      synchronizeStorageData();
+    }
+
+    // 訪客點擊留言輸入框時的彈窗攔截機制
+    function interceptVisitorAction() {
+      if (!currentUser) {
+        if (confirm('是否有平台帳號？登入後才能參與毛孩話題討論唷！')) {
+          navigateTo('authPage');
+        } else {
+          document.activeElement.blur(); // 拒絕登入則強制退回輸入焦點
+        }
+      }
+    }
+
+    // 點擊評論 icon 自動滾動/聚焦至該輸入欄位
+    function focusCommentInput(postId) {
+      if (!currentUser) {
+        interceptVisitorAction();
+        return;
+      }
+      document.getElementById(`comment-field-${postId}`).focus();
+    }
+
+    // 留言送出核心
+    function submitComment(postId) {
+      if (!currentUser) {
+        interceptVisitorAction();
+        return;
+      }
+
+      const inputElement = document.getElementById(`comment-field-${postId}`);
+      const commentText = inputElement.value.trim();
+
+      if (!commentText) {
+        alert('請先輸入你想留下來的悄悄話唷！');
+        return;
+      }
+
+      const targetPost = posts.find(p => p.id === postId);
+      targetPost.comments.push({
+        userName: currentUser.name,
+        text: commentText
+      });
+
+      inputElement.value = ''; // 成功後清空該文字欄
+      synchronizeStorageData();
+    }
+
+    // 資料同步快取與重繪畫面
+    function synchronizeStorageData() {
+      localStorage.setItem('pet_platform_posts', JSON.stringify(posts));
+      // 雙向重新渲染更新畫面
+      renderGlobalFeed();
+      if (currentUser) {
+        renderMyFeed();
+      }
+    }
+  </script>
+</body>
+</html>
